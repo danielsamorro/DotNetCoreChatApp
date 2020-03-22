@@ -14,6 +14,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using ChatApp.Hubs;
 using ChatApp.Models;
+using ChatApp.Repositories.Interfaces;
+using ChatApp.Repositories;
 
 namespace ChatApp
 {
@@ -32,7 +34,7 @@ namespace ChatApp
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(
                     Configuration.GetConnectionString("DefaultConnection")));
-            services.AddDefaultIdentity<ChatUser>(options => 
+            services.AddDefaultIdentity<ChatUser>(options =>
             {
                 // Default SignIn settings.
                 options.SignIn.RequireConfirmedEmail = false;
@@ -49,6 +51,7 @@ namespace ChatApp
             {
                 o.EnableDetailedErrors = true;
             });
+            services.AddScoped<IMessageRepository, MessageRepository>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

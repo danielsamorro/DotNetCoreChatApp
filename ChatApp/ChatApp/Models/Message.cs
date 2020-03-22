@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ChatApp.Models.Interfaces;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -6,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace ChatApp.Models
 {
-    public class Message
+    public class Message : IEntity
     {
         public Message()
         {

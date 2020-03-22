@@ -24,10 +24,26 @@ document.getElementById("sendButton").addEventListener("click", async function (
         await connection.start();
     }
 
-    var user = document.getElementById("userInput").value;
+    var user = $("#talkingTo").text();
     var message = document.getElementById("messageInput").value;
     connection.invoke("SendMessage", user, message).catch(function (err) {
         return console.error(err.toString());
     });
     event.preventDefault();
+});
+
+$(".userOnline").click(function () {
+    $("#talkingTo").text(this.text);
+
+    $.get("/api/Message?userName=" + this.text, function (data) {
+        $("#messagesList").empty();
+
+        var i = 0;
+        for (i = 0; i < data.length; i++) {
+            var encodedMsg = data[i].sentFrom + " says " + data[i].text;
+            var li = document.createElement("li");
+            li.textContent = encodedMsg;
+            document.getElementById("messagesList").appendChild(li);
+        }
+    });
 });
