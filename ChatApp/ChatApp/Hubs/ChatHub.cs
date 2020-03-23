@@ -41,9 +41,8 @@ namespace ChatApp.Hubs
             await base.OnDisconnectedAsync(exception);
         }
 
-        public async Task SendMessage(string destinyUser, string message)
+        public async Task SendMessage(string message)
         {
-            var userToSend = await _userManager.FindByNameAsync(destinyUser);
             var currentUser = await _userManager.GetUserAsync(Context.User);
 
             var msg = new Message
@@ -51,18 +50,11 @@ namespace ChatApp.Hubs
                 Text = message,
                 ChatUserID = currentUser.Id,
                 ChatUser = currentUser,
-                SentTo = userToSend.Id
+                SentTo = ""
             };
 
             await _messageRepository.Add(msg);
-
-            var userList = ConnectionMapping<string>.GetConnections(destinyUser).ToList();
-            userList.AddRange(ConnectionMapping<string>.GetConnections(currentUser.UserName));
-
-            foreach (var connectionId in userList)
-            {
-                await Clients.Client(connectionId).SendAsync("ReceiveMessage", currentUser.UserName, msg.Text);
-            }
+            await Clients.All.SendAsync("ReceiveMessage", currentUser.UserName, msg.Text);
         }
     }
 }

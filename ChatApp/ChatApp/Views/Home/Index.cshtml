@@ -1,24 +1,6 @@
 ﻿@page
-@using Microsoft.AspNetCore.Identity
-@inject SignInManager<ChatUser> SignInManager
-
-<div class="div">
-    <ul>
-        @{foreach (var signedInUser in @ViewBag.SignedInUsers)
-            {
-                <li><a href="#" class="userOnline">@signedInUser</a></li>
-            }
-
-        }
-    </ul>
-</div>
-
 <div class="container">
     <div class="row">&nbsp;</div>
-    <div class="row">
-        Talking to:
-        <span id="talkingTo"></span>
-    </div>
     <div class="row">
         <div class="row">
             <div class="col-12">Message</div>

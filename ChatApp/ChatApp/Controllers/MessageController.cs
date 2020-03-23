@@ -26,14 +26,9 @@ namespace ChatApp.Controllers
 
         [Authorize]
         [HttpGet]
-        public async Task<IEnumerable<MessageDto>> GetAsync(string userName)
+        public async Task<IEnumerable<MessageDto>> GetAsync(int count)
         {
-            var currentUser = await _userManager.GetUserAsync(HttpContext.User);
-            var targetUser = await _userManager.FindByNameAsync(userName);
-
-
-            return await _messageRepository.GetAll(currentUser, targetUser);
-                
+            return await _messageRepository.GetAll(count);                
         }
     }
 }

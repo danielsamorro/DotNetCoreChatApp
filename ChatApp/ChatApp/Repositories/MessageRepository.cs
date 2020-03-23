@@ -40,19 +40,17 @@ namespace ChatApp.Repositories
             return await _context.Messages.FindAsync(id);
         }
 
-        public async Task<IEnumerable<MessageDto>> GetAll(ChatUser currentUser, ChatUser targetUser)
+        public async Task<IEnumerable<MessageDto>> GetAll(int count)
         {
             var messages = await _context.Messages
-                .Where(m => (m.ChatUser.Id == currentUser.Id && m.SentTo == targetUser.Id) ||
-                            (m.ChatUser.Id == targetUser.Id && m.SentTo == currentUser.Id))
-                .OrderBy(m => m.MessageID)
-                .Take(50)
+                .OrderBy(m => m.CreatedOn)
+                .Take(count)
                 .Select(m => new MessageDto
                 {
                     CreatedOn = m.CreatedOn,
                     MessageID = m.MessageID,
                     SentFrom = m.ChatUser.UserName,
-                    SentTo = currentUser.Id == m.SentTo ? currentUser.UserName : targetUser.UserName,
+                    SentTo = "",
                     Text = m.Text
                 })
                 .ToListAsync();

@@ -27,10 +27,6 @@ namespace ChatApp.Controllers
         [Authorize]
         public IActionResult Index()
         {
-            var signedInUsers = ConnectionMapping<string>.GetAllUserNames();
-
-            ViewBag.SignedInUsers = signedInUsers;
-
             return View();
         }
 

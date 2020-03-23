@@ -13,7 +13,7 @@ namespace ChatApp.Repositories.Interfaces
         Task<int> Add(Message entity);
         Task<int> Delete(int id);
         Task<Message> Get(int id);
-        Task<IEnumerable<MessageDto>> GetAll(ChatUser currentUser, ChatUser targetUser);
+        Task<IEnumerable<MessageDto>> GetAll(int count);
         Task<int> Update(Message message);
     }
 }
