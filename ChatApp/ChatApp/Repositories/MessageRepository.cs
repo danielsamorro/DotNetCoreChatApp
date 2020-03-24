@@ -49,8 +49,7 @@ namespace ChatApp.Repositories
                 {
                     CreatedOn = m.CreatedOn,
                     MessageID = m.MessageID,
-                    SentFrom = m.ChatUser.UserName,
-                    SentTo = "",
+                    SentFrom = string.Equals(m.SentFrom, "bot", StringComparison.OrdinalIgnoreCase) ? m.SentFrom : m.ChatUser.UserName,
                     Text = m.Text
                 })
                 .ToListAsync();

@@ -1,21 +1,21 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.UI;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
-using Microsoft.EntityFrameworkCore;
 using ChatApp.Data;
+using ChatApp.Hubs;
+using ChatApp.Models;
+using ChatApp.Repositories;
+using ChatApp.Repositories.Interfaces;
+using ChatApp.Requests;
+using ChatApp.Response;
+using ChatApp.Services;
+using GreenPipes;
+using MassTransit;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using ChatApp.Hubs;
-using ChatApp.Models;
-using ChatApp.Repositories.Interfaces;
-using ChatApp.Repositories;
+using Microsoft.Extensions.Logging;
+using System;
 
 namespace ChatApp
 {
@@ -51,6 +51,24 @@ namespace ChatApp
             {
                 o.EnableDetailedErrors = true;
             });
+
+            services.AddMassTransit();
+
+            services.AddSingleton(provider => Bus.Factory.CreateUsingRabbitMq(cfg =>
+            {
+                cfg.Host("localhost", "/", h => { });
+
+                cfg.UseExtensionsLogging(provider.GetService<ILoggerFactory>());
+            }));
+
+            services.AddSingleton<IPublishEndpoint>(provider => provider.GetRequiredService<IBusControl>());
+            services.AddSingleton<ISendEndpointProvider>(provider => provider.GetRequiredService<IBusControl>());
+            services.AddSingleton<IBus>(provider => provider.GetRequiredService<IBusControl>());
+
+            services.AddScoped(provider => provider.GetRequiredService<IBus>().CreateRequestClient<StockRequest>());
+
+            services.AddSingleton<IHostedService, BusService>();
+
             services.AddScoped<IMessageRepository, MessageRepository>();
         }
 
